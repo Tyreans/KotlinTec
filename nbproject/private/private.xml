@@ -6,7 +6,12 @@
         <group>
             <file>file:/C:/Users/Tyreans/Downloads/00-ProyIniSintacticoLengSimple/CompiladorApp/src/compilador/SintacticoSemantico.java</file>
             <file>file:/C:/Users/Tyreans/Downloads/00-ProyIniSintacticoLengSimple/CompiladorApp/src/compilador/Automata.java</file>
+            <file>file:/C:/Users/Tyreans/Downloads/00-ProyIniSintacticoLengSimple/CompiladorApp/src/compilador/BufferEntrada.java</file>
+            <file>file:/C:/Users/Tyreans/Downloads/00-ProyIniSintacticoLengSimple/CompiladorApp/test/pruebas_sintactico/sintactico_ErrTest_01.kt</file>
+            <file>file:/C:/Users/Tyreans/Downloads/00-ProyIniSintacticoLengSimple/CompiladorApp/src/compilador/Compilador.java</file>
+            <file>file:/C:/Users/Tyreans/Downloads/00-ProyIniSintacticoLengSimple/CompiladorApp/src/compilador/ManejErrores.java</file>
             <file>file:/C:/Users/Tyreans/Downloads/00-ProyIniSintacticoLengSimple/CompiladorApp/src/compilador/Lexico.java</file>
+            <file>file:/C:/Users/Tyreans/Downloads/00-ProyIniSintacticoLengSimple/CompiladorApp/test/pruebas_sintactico/SintacticoTest.java</file>
         </group>
     </open-files>
 </project-private>

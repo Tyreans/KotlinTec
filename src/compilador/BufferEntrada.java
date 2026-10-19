@@ -23,9 +23,9 @@
  *:                                 buffer tiene ahora 4 columnas, la 4a es el numero
  *:                                 de renglon del codigo fuente.
  *: 08/Sep/2015 FGil               -Se agrego el metodo anterior ().
+ *: 14/Sep/2023 FGil     2023.1    -Se creo el metodo calcFinBuffer ().
  *:-----------------------------------------------------------------------------
  */
-
 
 package compilador;
 import java.util.Vector;
@@ -33,118 +33,143 @@ import general.Linea_BE;
 
 public class BufferEntrada {
     
-/*------------------------------------------------------------------------------------------------------------*/
- 
-//Declaracion de vector y variables que se utilizaran    
-     
-        private int UltimoElemento;       
-        private Vector<Linea_BE> Lis_BE;
-        public Linea_BE preAnalisis;
-        private int Ptr; 
-        Compilador compilador;
-/*------------------------------------------------------------------------------------------------------------*/
-//Constructor de Buffer de entrada que recibe una variable del tipo Compilador
-        
-        public BufferEntrada (Compilador c)
-        {
-            compilador = c;
-            UltimoElemento = 0;
-            Lis_BE = new Vector<Linea_BE>();            
-            preAnalisis = new Linea_BE( );
-            Ptr = 0;              
-        }
-/*------------------------------------------------------------------------------------------------------------*/
+    private int                 UltimoElemento;       
+    private Vector<Linea_BE>    Lis_BE;
+    public Linea_BE             preAnalisis;
+    private int                 Ptr; 
+    Compilador                  compilador;
     
-        public void setprt(int PTR)
+    //--------------------------------------------------------------------------
+    //Constructor de Buffer de entrada que recibe una variable del tipo Compilador
+
+    public BufferEntrada (Compilador c)
+    {
+        compilador = c;
+        UltimoElemento = 0;
+        Lis_BE = new Vector<Linea_BE>();            
+        preAnalisis = new Linea_BE( );
+        Ptr = 0;              
+    }
+    
+    //--------------------------------------------------------------------------
+
+    public void setprt(int PTR)
+    {
+        Ptr = PTR;
+    }
+
+    //--------------------------------------------------------------------------
+
+    public int getptr()
+    {
+        return Ptr;
+    }
+
+    //--------------------------------------------------------------------------
+    //Metodo que inicializa nuestro buffer de entrada
+
+    public void inicializar()
+    {
+        UltimoElemento = 0;
+        Lis_BE.clear();
+        Lis_BE.add(new Linea_BE("$", "$", 0, 999));     // FGil: 4o argumento es el num de linea en codigo fuente
+        Ptr = 0;
+        preAnalisis = obtElemento(Ptr);
+    }
+    //--------------------------------------------------------------------------
+    //Metodo que inserta el elemento en la linea del buffer 
+    
+    public void insertar(Linea_BE objTL)
+    {
+        //Lis_BE.add(Lis_BE.elementAt(UltimoElemento));//agregamos linea de vector
+        Lis_BE.add(UltimoElemento, objTL); 
+        UltimoElemento++;             
+    }
+    
+    //--------------------------------------------------------------------------
+    // Metodo para continuar con la siguiente linea del buffer
+
+    public void siguiente()
+    {
+        if (Ptr < Lis_BE.size() - 1)
         {
-            Ptr = PTR;
+            Ptr += 1;
         }
-        
-/*------------------------------------------------------------------------------------------------------------*/
-       
-        public int getptr()
+        preAnalisis = obtElemento(Ptr);          
+    }
+    
+    //--------------------------------------------------------------------------
+    // Metodo para retroceder el preAnalisis en 1 posicion.
+
+    public void anterior ()
+    {
+        if ( Ptr > 0 )
         {
-            return Ptr;
+            Ptr -= 1;
         }
-        
-/*------------------------------------------------------------------------------------------------------------*/
-//Metodo que inicializa nuestro buffer de entrada
-        
-        public void inicializar()
-        {
-            UltimoElemento = 0;
-            Lis_BE.clear();
-            Lis_BE.add(new Linea_BE("$", "$", 0, 999));     // FGil: 4o argumento es el num de linea en codigo fuente
-            Ptr = 0;
-            preAnalisis = obtElemento(Ptr);
+        preAnalisis = obtElemento(Ptr);          
+    }
+    
+    //--------------------------------------------------------------------------
+    // Metodo que obtiene el elemento de la posicion deseada en el buffer    
+
+    public Linea_BE obtElemento(int intPosicion)
+    { 
+
+        return Lis_BE.elementAt(intPosicion); 
+
+    }
+    
+    //--------------------------------------------------------------------------
+    //Metodo que reestablece nuestro buffer de entrada
+
+    public void restablecer()
+    {
+        Ptr = 0;
+        preAnalisis = obtElemento(Ptr);
+    }
+    
+    //--------------------------------------------------------------------------
+    
+    public void setPrt ( int pos )
+    {
+        Ptr = pos;
+        preAnalisis = obtElemento(Ptr);
+    }
+    
+    //--------------------------------------------------------------------------
+    
+    public int getPrt ()
+    {
+        return Ptr;
+    }
+    
+    //--------------------------------------------------------------------------
+    //Propiedad que obtiene el tamaño del buffer 
+
+    public int getTamaño()
+    {
+
+        return Lis_BE.size();
+
+    }
+    
+    //--------------------------------------------------------------------------
+    // (v2023.1) : 14Sep2023 : FGil
+    // Calcular el fin del buffer: Establece un valor correcto de numero de linea para
+    // la marca de fin del buffer "$".
+
+    public void calcFinBuffer () {
+        if ( UltimoElemento == 0 ) {
+            Linea_BE ultLinea = this.obtElemento( 0 );
+            ultLinea.setNumLinea (1 );
+        } else {
+            Linea_BE penultimaLinea = this.obtElemento ( UltimoElemento - 1 );
+            Linea_BE ultLinea       = this.obtElemento ( UltimoElemento );
+            ultLinea.setNumLinea ( penultimaLinea.getNumLinea() + 1 );
         }
-/*------------------------------------------------------------------------------------------------------------*/
-//Metodo que inserta el elemento en la linea del buffer 
-        public void insertar(Linea_BE objTL)
-        {
-            //Lis_BE.add(Lis_BE.elementAt(UltimoElemento));//agregamos linea de vector
-            Lis_BE.add(UltimoElemento, objTL); 
-            UltimoElemento++;             
-        }
-/*------------------------------------------------------------------------------------------------------------*/
-// Metodo para continuar con la siguiente linea del buffer
-        
-        public void siguiente()
-        {
-            if (Ptr < Lis_BE.size() - 1)
-            {
-                Ptr += 1;
-            }
-            preAnalisis = obtElemento(Ptr);          
-        }
-/*------------------------------------------------------------------------------------------------------------*/
-// Metodo para retroceder el preAnalisis en 1 posicion.
-        
-        public void anterior ()
-        {
-            if ( Ptr > 0 )
-            {
-                Ptr -= 1;
-            }
-            preAnalisis = obtElemento(Ptr);          
-        }
-/*------------------------------------------------------------------------------------------------------------*/
-// Metodo que obtiene el elemento de la posicion deseada en el buffer    
-      
-        public Linea_BE obtElemento(int intPosicion)
-        { 
-            
-            return Lis_BE.elementAt(intPosicion); 
-            
-        }
-/*------------------------------------------------------------------------------------------------------------*/
-//Metodo que reestablece nuestro buffer de entrada
-        
-        public void restablecer()
-        {
-            Ptr = 0;
-            preAnalisis = obtElemento(Ptr);
-        }
-/*------------------------------------------------------------------------------------------------------------*/
-        public void setPrt ( int pos )
-        {
-            Ptr = pos;
-            preAnalisis = obtElemento(Ptr);
-        }
-/*------------------------------------------------------------------------------------------------------------*/
-        public int getPrt ()
-        {
-            return Ptr;
-        }
-/*------------------------------------------------------------------------------------------------------------*/
-//Propiedad que obtiene el tamaño del buffer 
-        
-        public int getTamaño()
-        {
-            
-            return Lis_BE.size();
-            
-        }
- /*------------------------------------------------------------------------------------------------------------*/
+    }
+    
+    //--------------------------------------------------------------------------
          
 }
